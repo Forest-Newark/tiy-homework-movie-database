@@ -55,6 +55,39 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: genre; Type: TABLE; Schema: public; Owner: forestnewark
+--
+
+CREATE TABLE genre (
+    genreid integer NOT NULL,
+    genre character varying(20) NOT NULL
+);
+
+
+ALTER TABLE genre OWNER TO forestnewark;
+
+--
+-- Name: genre_genreid_seq; Type: SEQUENCE; Schema: public; Owner: forestnewark
+--
+
+CREATE SEQUENCE genre_genreid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE genre_genreid_seq OWNER TO forestnewark;
+
+--
+-- Name: genre_genreid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: forestnewark
+--
+
+ALTER SEQUENCE genre_genreid_seq OWNED BY genre.genreid;
+
+
+--
 -- Name: movie; Type: TABLE; Schema: public; Owner: forestnewark
 --
 
@@ -65,6 +98,40 @@ CREATE TABLE movie (
 
 
 ALTER TABLE movie OWNER TO forestnewark;
+
+--
+-- Name: movie_genre; Type: TABLE; Schema: public; Owner: forestnewark
+--
+
+CREATE TABLE movie_genre (
+    moviegenreid integer NOT NULL,
+    movieid integer NOT NULL,
+    genreid integer NOT NULL
+);
+
+
+ALTER TABLE movie_genre OWNER TO forestnewark;
+
+--
+-- Name: movie_genre_moviegenreid_seq; Type: SEQUENCE; Schema: public; Owner: forestnewark
+--
+
+CREATE SEQUENCE movie_genre_moviegenreid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE movie_genre_moviegenreid_seq OWNER TO forestnewark;
+
+--
+-- Name: movie_genre_moviegenreid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: forestnewark
+--
+
+ALTER SEQUENCE movie_genre_moviegenreid_seq OWNED BY movie_genre.moviegenreid;
+
 
 --
 -- Name: movie_movieid_seq; Type: SEQUENCE; Schema: public; Owner: forestnewark
@@ -157,6 +224,40 @@ ALTER SEQUENCE person_role_person_roleid_seq OWNED BY person_role.person_roleid;
 
 
 --
+-- Name: review; Type: TABLE; Schema: public; Owner: forestnewark
+--
+
+CREATE TABLE review (
+    reviewid integer NOT NULL,
+    movieid integer NOT NULL,
+    score double precision NOT NULL
+);
+
+
+ALTER TABLE review OWNER TO forestnewark;
+
+--
+-- Name: review_reviewid_seq; Type: SEQUENCE; Schema: public; Owner: forestnewark
+--
+
+CREATE SEQUENCE review_reviewid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE review_reviewid_seq OWNER TO forestnewark;
+
+--
+-- Name: review_reviewid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: forestnewark
+--
+
+ALTER SEQUENCE review_reviewid_seq OWNED BY review.reviewid;
+
+
+--
 -- Name: role; Type: TABLE; Schema: public; Owner: forestnewark
 --
 
@@ -190,10 +291,24 @@ ALTER SEQUENCE role_roleid_seq OWNED BY role.roleid;
 
 
 --
+-- Name: genre genreid; Type: DEFAULT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY genre ALTER COLUMN genreid SET DEFAULT nextval('genre_genreid_seq'::regclass);
+
+
+--
 -- Name: movie movieid; Type: DEFAULT; Schema: public; Owner: forestnewark
 --
 
 ALTER TABLE ONLY movie ALTER COLUMN movieid SET DEFAULT nextval('movie_movieid_seq'::regclass);
+
+
+--
+-- Name: movie_genre moviegenreid; Type: DEFAULT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY movie_genre ALTER COLUMN moviegenreid SET DEFAULT nextval('movie_genre_moviegenreid_seq'::regclass);
 
 
 --
@@ -211,10 +326,39 @@ ALTER TABLE ONLY person_role ALTER COLUMN person_roleid SET DEFAULT nextval('per
 
 
 --
+-- Name: review reviewid; Type: DEFAULT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY review ALTER COLUMN reviewid SET DEFAULT nextval('review_reviewid_seq'::regclass);
+
+
+--
 -- Name: role roleid; Type: DEFAULT; Schema: public; Owner: forestnewark
 --
 
 ALTER TABLE ONLY role ALTER COLUMN roleid SET DEFAULT nextval('role_roleid_seq'::regclass);
+
+
+--
+-- Data for Name: genre; Type: TABLE DATA; Schema: public; Owner: forestnewark
+--
+
+COPY genre (genreid, genre) FROM stdin;
+1	Comedy
+2	Horror
+3	Sci-Fi
+4	Fantasy
+5	Drama
+6	Action
+7	Thriller
+\.
+
+
+--
+-- Name: genre_genreid_seq; Type: SEQUENCE SET; Schema: public; Owner: forestnewark
+--
+
+SELECT pg_catalog.setval('genre_genreid_seq', 7, true);
 
 
 --
@@ -233,6 +377,44 @@ COPY movie (movieid, name) FROM stdin;
 10	Snow Sharks
 11	MechaShark vs. MegaShark
 \.
+
+
+--
+-- Data for Name: movie_genre; Type: TABLE DATA; Schema: public; Owner: forestnewark
+--
+
+COPY movie_genre (moviegenreid, movieid, genreid) FROM stdin;
+1	1	1
+2	1	2
+3	1	3
+4	3	2
+5	3	3
+6	4	2
+7	4	3
+8	5	1
+9	5	2
+10	5	3
+14	6	1
+15	6	2
+16	6	4
+17	7	1
+18	8	5
+20	9	6
+21	9	2
+22	9	3
+23	10	2
+24	10	3
+25	11	6
+26	11	7
+27	11	3
+\.
+
+
+--
+-- Name: movie_genre_moviegenreid_seq; Type: SEQUENCE SET; Schema: public; Owner: forestnewark
+--
+
+SELECT pg_catalog.setval('movie_genre_moviegenreid_seq', 27, true);
 
 
 --
@@ -347,6 +529,31 @@ SELECT pg_catalog.setval('person_role_person_roleid_seq', 52, true);
 
 
 --
+-- Data for Name: review; Type: TABLE DATA; Schema: public; Owner: forestnewark
+--
+
+COPY review (reviewid, movieid, score) FROM stdin;
+1	1	4.20000000000000018
+2	3	6.5
+3	4	2.20000000000000018
+4	5	3.29999999999999982
+5	6	4.29999999999999982
+6	7	5
+7	8	5.5
+8	9	6.20000000000000018
+9	11	1.80000000000000004
+10	10	1.10000000000000009
+\.
+
+
+--
+-- Name: review_reviewid_seq; Type: SEQUENCE SET; Schema: public; Owner: forestnewark
+--
+
+SELECT pg_catalog.setval('review_reviewid_seq', 10, true);
+
+
+--
 -- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: forestnewark
 --
 
@@ -362,6 +569,22 @@ COPY role (roleid, role) FROM stdin;
 --
 
 SELECT pg_catalog.setval('role_roleid_seq', 3, true);
+
+
+--
+-- Name: genre genre_pkey; Type: CONSTRAINT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY genre
+    ADD CONSTRAINT genre_pkey PRIMARY KEY (genreid);
+
+
+--
+-- Name: movie_genre movie_genre_pkey; Type: CONSTRAINT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY movie_genre
+    ADD CONSTRAINT movie_genre_pkey PRIMARY KEY (moviegenreid);
 
 
 --
@@ -389,11 +612,40 @@ ALTER TABLE ONLY person_role
 
 
 --
+-- Name: review review_pkey; Type: CONSTRAINT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY review
+    ADD CONSTRAINT review_pkey PRIMARY KEY (reviewid);
+
+
+--
 -- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: forestnewark
 --
 
 ALTER TABLE ONLY role
     ADD CONSTRAINT role_pkey PRIMARY KEY (roleid);
+
+
+--
+-- Name: genre_genre_uindex; Type: INDEX; Schema: public; Owner: forestnewark
+--
+
+CREATE UNIQUE INDEX genre_genre_uindex ON genre USING btree (genre);
+
+
+--
+-- Name: genre_genreid_uindex; Type: INDEX; Schema: public; Owner: forestnewark
+--
+
+CREATE UNIQUE INDEX genre_genreid_uindex ON genre USING btree (genreid);
+
+
+--
+-- Name: movie_genre_moviegenreid_uindex; Type: INDEX; Schema: public; Owner: forestnewark
+--
+
+CREATE UNIQUE INDEX movie_genre_moviegenreid_uindex ON movie_genre USING btree (moviegenreid);
 
 
 --
@@ -418,10 +670,33 @@ CREATE UNIQUE INDEX person_role_person_roleid_uindex ON person_role USING btree 
 
 
 --
+-- Name: review_reviewid_uindex; Type: INDEX; Schema: public; Owner: forestnewark
+--
+
+CREATE UNIQUE INDEX review_reviewid_uindex ON review USING btree (reviewid);
+
+
+--
 -- Name: role_roleid_uindex; Type: INDEX; Schema: public; Owner: forestnewark
 --
 
 CREATE UNIQUE INDEX role_roleid_uindex ON role USING btree (roleid);
+
+
+--
+-- Name: movie_genre movie_genre_genre_genreid_fk; Type: FK CONSTRAINT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY movie_genre
+    ADD CONSTRAINT movie_genre_genre_genreid_fk FOREIGN KEY (genreid) REFERENCES genre(genreid);
+
+
+--
+-- Name: movie_genre movie_genre_movie_movieid_fk; Type: FK CONSTRAINT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY movie_genre
+    ADD CONSTRAINT movie_genre_movie_movieid_fk FOREIGN KEY (movieid) REFERENCES movie(movieid);
 
 
 --
@@ -446,6 +721,14 @@ ALTER TABLE ONLY person_role
 
 ALTER TABLE ONLY person_role
     ADD CONSTRAINT person_role_role_roleid_fk FOREIGN KEY (roleid) REFERENCES role(roleid);
+
+
+--
+-- Name: review review_movie_movieid_fk; Type: FK CONSTRAINT; Schema: public; Owner: forestnewark
+--
+
+ALTER TABLE ONLY review
+    ADD CONSTRAINT review_movie_movieid_fk FOREIGN KEY (movieid) REFERENCES movie(movieid);
 
 
 --
